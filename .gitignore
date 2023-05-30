@@ -220,3 +220,7 @@ ENV/
 # Rope project settings
 .ropeproject
 
+# my custom
+checkpoints/
+data/
+logs/
