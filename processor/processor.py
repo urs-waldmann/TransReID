@@ -7,6 +7,7 @@ from utils.meter import AverageMeter
 from utils.metrics import R1_mAP_eval
 from torch.cuda import amp
 import torch.distributed as dist
+import numpy as np
 
 def do_train(cfg,
              model,
@@ -154,6 +155,8 @@ def do_inference(cfg,
     model.eval()
     img_path_list = []
 
+    feats_all = np.empty([len(val_loader.dataset), 3840])
+
     for n_iter, (img, pid, camid, camids, target_view, imgpath) in enumerate(val_loader):
         with torch.no_grad():
             img = img.to(device)
@@ -162,6 +165,18 @@ def do_inference(cfg,
             feat = model(img, cam_label=camids, view_label=target_view)
             evaluator.update((feat, pid, camid))
             img_path_list.extend(imgpath)
+
+            feats_all[n_iter * cfg.TEST.IMS_PER_BATCH:(n_iter + 1) * cfg.TEST.IMS_PER_BATCH, :] = feat.detach().cpu()
+
+    feats_all = feats_all.reshape((-1, 12, 3840))
+
+    np.save(
+        os.path.join(
+            cfg.OUTPUT_DIR,
+            'feats_transreid.npy'
+        ),
+        feats_all
+    )
 
     cmc, mAP, _, _, _, _, _ = evaluator.compute()
     logger.info("Validation Results ")
