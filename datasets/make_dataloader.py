@@ -14,6 +14,7 @@ from .occ_duke import OCC_DukeMTMCreID
 from .vehicleid import VehicleID
 from .veri import VeRi
 from .netepu import NeTePu
+from .h36m import H36M
 __factory = {
     'market1501': Market1501,
     'dukemtmc': DukeMTMCreID,
@@ -21,7 +22,8 @@ __factory = {
     'occ_duke': OCC_DukeMTMCreID,
     'veri': VeRi,
     'VehicleID': VehicleID,
-    'netepu': NeTePu
+    'netepu': NeTePu,
+    'h36m': H36M
 }
 
 def train_collate_fn(batch):
