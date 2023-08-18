@@ -156,9 +156,9 @@ def do_inference(cfg,
     img_path_list = []
 
     # global feature size is 768; there are also 4 local feature vectors with size 768 each
-    feats_all = np.empty([6720, 12, 768])
+    feats_all = np.empty([1120, 7, 768])
 
-    current_sample = np.zeros([12])
+    current_sample = np.zeros([7])
 
     for n_iter, (img, pid, camid, camids, target_view, imgpath) in enumerate(val_loader):
         with torch.no_grad():
@@ -180,7 +180,7 @@ def do_inference(cfg,
                 current_sample[texture] += 1
 
     feats_all = np.swapaxes(feats_all, 0, 1)
-    feats_all = feats_all.reshape(12, 280, 24, 768)
+    feats_all = feats_all.reshape(7, 280, 4, 768)
     feats_all = np.swapaxes(feats_all, 0, 1)
 
     np.save(
